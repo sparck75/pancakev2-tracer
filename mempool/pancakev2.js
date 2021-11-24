@@ -18,12 +18,7 @@ const trace = async () => {
             if (tx) {
               let result = await parseTx(tx);
               if (result) {
-                // sendEmail(result);
-                console.log("");
-                console.log(result);
-                console.log("");
-                console.log("##########################");
-                console.log("");
+                sendEmail(result);
               }
             }
           })
