@@ -1,0 +1,18 @@
+{
+  "name": "pancake",
+  "version": "1.0.0",
+  "description": "pancake factory tracer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jk",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ethers": "^5.5.1",
+    "nodemailer": "^6.7.1",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "web3": "^1.6.1"
+  }
+}
