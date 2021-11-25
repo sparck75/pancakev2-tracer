@@ -21,7 +21,7 @@ const createMailContent = (data) => {
       to: process.env.MAIL_ADDRESS,
       subject: "Add Liquidity BNB",
       text: "",
-      html: ` hash : ${data.hash} token : ${data.token} <br/> amountETHMin : ${data.amountETHMin}`,
+      html: ` hash : ${data.hash} token : ${data.token}<br/> amountETHMin : ${data.amountETHMin}`,
     };
   else if (tokenType == "busd")
     return {
@@ -29,7 +29,7 @@ const createMailContent = (data) => {
       to: process.env.MAIL_ADDRESS,
       subject: "Add Busd Pair Liquidity",
       text: "",
-      html: ` hash : ${data.hash} tokenA : ${data.tokenA} <br/> tokenB : ${data.tokenB} <br/> busdAmount : ${data.busdAmount}`,
+      html: ` hash : ${data.hash} tokenA : ${data.tokenA}<br/> tokenB : ${data.tokenB} <br/> busdAmount : ${data.busdAmount}`,
     };
   else if (tokenType == "wbnb")
     return {
@@ -37,7 +37,7 @@ const createMailContent = (data) => {
       to: process.env.MAIL_ADDRESS,
       subject: "Add wBnb Pair Liquidity",
       text: "",
-      html: ` hash : ${data.hash} tokenA : ${data.tokenA} <br/> tokenB : ${data.tokenB} <br/> wBnbAmount : ${data.wBnbAmount}`,
+      html: ` hash : ${data.hash} tokenA : ${data.tokenA}<br/> tokenB : ${data.tokenB}<br/> wBnbAmount : ${data.wBnbAmount}`,
     };
 };
 
