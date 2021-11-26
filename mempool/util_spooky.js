@@ -2,15 +2,17 @@ require("dotenv").config();
 const ethers = require("ethers");
 const ERC20 = require("../contracts/erc20");
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.BSC_HTTP, 56);
+const provider = new ethers.providers.JsonRpcProvider(
+  process.env.OPERA_HTTP,
+  250
+);
 
 const addLiquidityETH = "0xf305d719";
 const addLiquidity = "0xe8e33700";
 
-const busd = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
-const wbnb = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
-
-const blackList = [""];
+// usdc, wftm
+const busd = "0x04068da6c83afcfa0e13ba15a6696662335d5b75";
+const wbnb = "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83";
 
 const loadContract = async (token) => {
   return new ethers.Contract(token, ERC20.ABI, provider);
@@ -59,8 +61,9 @@ const parseTx = async (tx) => {
     let amountETHMin = parseToDigit(
       ethers.BigNumber.from("0x" + input.substring(202, 266))
     );
-    if (amountETHMin >= 60) {
+    if (amountETHMin >= 2000) {
       return {
+        chain: 250,
         hash,
         token,
         amountETHMin,
@@ -86,8 +89,9 @@ const parseTx = async (tx) => {
     let isBusdPair = checkBusdPair(tokenA, tokenB);
     if (isBusdPair > 0) {
       let busdAmount = isBusdPair == 1 ? amountADesired : amountBDesired;
-      if (busdAmount >= 40000)
+      if (busdAmount >= 5000)
         return {
+          chain: 250,
           hash,
           tokenA,
           nameA: tokenAInfo.name,
@@ -101,10 +105,11 @@ const parseTx = async (tx) => {
       else return 0;
     }
     let isWbnbPair = checkWbnbPair(tokenA, tokenB);
-    if (isWbnbPair > 0) {
+    if (isWbnbPair > 2000) {
       let wBnbAmount = isWbnbPair == 1 ? amountADesired : amountBDesired;
-      if (wBnbAmount > 60)
+      if (wBnbAmount > 0)
         return {
+          chain: 250,
           hash,
           tokenA,
           nameA: tokenAInfo.name,

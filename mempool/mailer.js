@@ -19,25 +19,49 @@ const createMailContent = (data) => {
     return {
       from: process.env.MAIL_ADDRESS,
       to: process.env.MAIL_ADDRESS,
-      subject: "Add Liquidity BNB",
+      subject: `Add Liquidity on ${data.chain == 56 ? "BSC" : "Fantom"}`,
       text: "",
-      html: ` hash : ${data.hash}</br> name : ${data.name}</br> symbol : ${data.symbol}</br>token : ${data.token}<br/> amountETHMin : ${data.amountETHMin}`,
+      html: `chain : ${data.chain == 56 ? "BSC" : "Fantom"}</br> hash : ${
+        data.hash
+      }</br> name : ${data.name}</br> symbol : ${data.symbol}</br>token : ${
+        data.token
+      }<br/> amountETHMin : ${data.amountETHMin}`,
     };
   else if (tokenType == "busd")
     return {
       from: process.env.MAIL_ADDRESS,
       to: process.env.MAIL_ADDRESS,
-      subject: "Add Busd Pair Liquidity",
+      subject: `Add StableCoin Pair Liquidity on ${
+        data.chain == 56 ? "BSC" : "Fantom"
+      }`,
       text: "",
-      html: ` hash : ${data.hash}</br> tokenA Name : ${data.nameA}</br> tokenA Symbol : ${data.symbolA}</br>tokenA : ${data.tokenA}</br> tokenB Name : ${data.nameB}</br> tokenB Symbol : ${data.symbolB} tokenB : ${data.tokenB}<br/> busdAmount : ${data.busdAmount}`,
+      html: `chain : ${data.chain == 56 ? "BSC" : "Fantom"}</br> hash : ${
+        data.hash
+      }</br> tokenA Name : ${data.nameA}</br> tokenA Symbol : ${
+        data.symbolA
+      }</br>tokenA : ${data.tokenA}</br> tokenB Name : ${
+        data.nameB
+      }</br> tokenB Symbol : ${data.symbolB} tokenB : ${
+        data.tokenB
+      }<br/> busdAmount : ${data.busdAmount}`,
     };
   else if (tokenType == "wbnb")
     return {
       from: process.env.MAIL_ADDRESS,
       to: process.env.MAIL_ADDRESS,
-      subject: "Add wBnb Pair Liquidity",
+      subject: `Add Wrapped token Pair Liquidity on ${
+        data.chain == 56 ? "BSC" : "Fantom"
+      }`,
       text: "",
-      html: ` hash : ${data.hash}</br> tokenA Name : ${data.nameA}</br> tokenA Symbol : ${data.symbolA}</br>tokenA : ${data.tokenA}</br> tokenB Name : ${data.nameB}</br> tokenB Symbol : ${data.symbolB} tokenB : ${data.tokenB}</br>wBnbAmount : ${data.wBnbAmount}`,
+      html: `chain : ${data.chain == 56 ? "BSC" : "Fantom"}</br> hash : ${
+        data.hash
+      }</br> tokenA Name : ${data.nameA}</br> tokenA Symbol : ${
+        data.symbolA
+      }</br>tokenA : ${data.tokenA}</br> tokenB Name : ${
+        data.nameB
+      }</br> tokenB Symbol : ${data.symbolB} tokenB : ${
+        data.tokenB
+      }</br>wBnbAmount : ${data.wBnbAmount}`,
     };
 };
 

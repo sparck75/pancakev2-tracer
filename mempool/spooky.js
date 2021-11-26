@@ -2,10 +2,10 @@ require("dotenv").config();
 
 const Web3 = require("web3");
 
-const parseTx = require("./util_pancake");
+const parseTx = require("./util_spooky");
 const sendEmail = require("./mailer");
 
-const web3 = new Web3(process.env.BSC_WSS);
+const web3 = new Web3(process.env.OPERA_WSS);
 
 const trace = async () => {
   try {
@@ -23,6 +23,7 @@ const trace = async () => {
             }
           })
           .catch((err) => {
+            console.log(err);
             console.log("getTransaction failed");
           });
       });
