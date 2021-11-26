@@ -2,14 +2,16 @@ require("dotenv").config();
 const ethers = require("ethers");
 const ERC20 = require("../../contracts/erc20");
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.BSC_HTTP, 56);
+const provider = new ethers.providers.JsonRpcProvider(process.env.ETH_HTTP, 1);
 
 const addLiquidityETH = "0xf305d719";
 const addLiquidity = "0xe8e33700";
 
 // busd, wbnb
-const busd = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
-const wbnb = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
+const wEth = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
+const usdt = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+const usdc = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+const dai = "0x6b175474e89094c44da98b954eedeac495271d0f";
 
 const loadContract = async (token) => {
   return new ethers.Contract(token, ERC20.ABI, provider);
@@ -35,15 +37,15 @@ const parseToDigit = (bn) => {
   return value;
 };
 
-const checkBusdPair = (tokenA, tokenB) => {
-  if (tokenA == busd) return 1;
-  if (tokenB == busd) return 2;
+const checkStableCoinPair = (tokenA, tokenB) => {
+  if (tokenA == usdt || tokenA == usdc || tokenA == dai) return 1;
+  if (tokenB == usdt || tokenB == usdc || tokenB == dai) return 2;
   return 0;
 };
 
-const checkWbnbPair = (tokenA, tokenB) => {
-  if (tokenA == wbnb) return 1;
-  if (tokenB == wbnb) return 2;
+const checkwEthPair = (tokenA, tokenB) => {
+  if (tokenA == wEth) return 1;
+  if (tokenB == wEth) return 2;
   return 0;
 };
 
@@ -56,19 +58,19 @@ const parseTx = async (tx) => {
       let token = "0x" + input.substring(34, 74);
       let tokenInfo = await getTokenInfo(token);
       if (!tokenInfo) return 0;
-      let amountETHMin = parseToDigit(
+      let amount = parseToDigit(
         ethers.BigNumber.from("0x" + input.substring(202, 266))
       );
-      if (amountETHMin >= 0) {
-        //60
+      if (amount >= 10) {
+        //10
         return {
-          chain: 56,
+          chain: 1,
           hash,
           token,
-          amountETHMin,
+          amount,
           name: tokenInfo.name,
           symbol: tokenInfo.symbol,
-          tokenType: "bnb",
+          tokenType: "native",
         };
       } else return 0;
     } else if (method == addLiquidity) {
@@ -85,13 +87,13 @@ const parseTx = async (tx) => {
         ethers.BigNumber.from("0x" + input.substring(202, 266))
       );
 
-      let isBusdPair = checkBusdPair(tokenA, tokenB);
-      if (isBusdPair > 0) {
-        let busdAmount = isBusdPair == 1 ? amountADesired : amountBDesired;
-        if (busdAmount >= 0)
+      let isStableCoinPair = checkStableCoinPair(tokenA, tokenB);
+      if (isStableCoinPair > 0) {
+        let amount = isStableCoinPair == 1 ? amountADesired : amountBDesired;
+        if (amount >= 40000)
           //40000
           return {
-            chain: 56,
+            chain: 1,
             hash,
             tokenA,
             nameA: tokenAInfo.name,
@@ -99,18 +101,18 @@ const parseTx = async (tx) => {
             tokenB,
             nameB: tokenBInfo.name,
             symbolB: tokenBInfo.symbol,
-            busdAmount,
-            tokenType: "busd",
+            amount,
+            tokenType: "stable",
           };
         else return 0;
       }
-      let isWbnbPair = checkWbnbPair(tokenA, tokenB);
-      if (isWbnbPair > 0) {
-        let wBnbAmount = isWbnbPair == 1 ? amountADesired : amountBDesired;
-        if (wBnbAmount > 0)
-          //60
+      let iswEthPair = checkwEthPair(tokenA, tokenB);
+      if (iswEthPair > 0) {
+        let wEthAmount = iswEthPair == 1 ? amountADesired : amountBDesired;
+        if (wEthAmount > 10)
+          //10
           return {
-            chain: 56,
+            chain: 1,
             hash,
             tokenA,
             nameA: tokenAInfo.name,
@@ -118,8 +120,8 @@ const parseTx = async (tx) => {
             tokenB,
             nameB: tokenBInfo.name,
             symbolB: tokenBInfo.symbol,
-            wBnbAmount,
-            tokenType: "wbnb",
+            wEthAmount,
+            tokenType: "wrapped",
           };
         else return 0;
       }

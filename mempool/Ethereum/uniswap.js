@@ -2,10 +2,10 @@ require("dotenv").config();
 
 const Web3 = require("web3");
 
-const parseTx = require("../BSC/util_pancake");
+const parseTx = require("./util_uni");
 const sendEmail = require("../mailer");
 
-const web3 = new Web3(process.env.BSC_WSS);
+const web3 = new Web3(process.env.ETH_WSS);
 
 const trace = async () => {
   try {
@@ -18,7 +18,8 @@ const trace = async () => {
             if (tx) {
               let result = await parseTx(tx);
               if (result) {
-                // sendEmail(result);
+                // console.log(result);
+                sendEmail(result);
               }
             }
           })
