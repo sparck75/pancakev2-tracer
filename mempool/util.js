@@ -1,10 +1,34 @@
+require("dotenv").config();
 const ethers = require("ethers");
+const ERC20 = require("../contracts/erc20");
+
+const provider = new ethers.providers.JsonRpcProvider(process.env.BSC_HTTP, 56);
 
 const addLiquidityETH = "0xf305d719";
 const addLiquidity = "0xe8e33700";
 
 const busd = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
 const wbnb = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
+
+const blackList = [""];
+
+const loadContract = async (token) => {
+  return new ethers.Contract(token, ERC20.ABI, provider);
+};
+
+const isLegitToken = (name, symbol) => {
+  let isName = /^[a-zA-Z]+$/.test(name);
+  let isSymbol = /^[a-zA-Z]+$/.test(symbol);
+  return isName && isSymbol;
+};
+
+const getTokenInfo = async (token) => {
+  let tokenContract = await loadContract(token);
+  let name = await tokenContract.name();
+  let symbol = await tokenContract.symbol();
+  if (isLegitToken(name, symbol)) return { name, symbol };
+  else return false;
+};
 
 const parseToDigit = (bn) => {
   let value = ethers.utils.formatEther(bn.toString());
@@ -30,6 +54,8 @@ const parseTx = async (tx) => {
   //   addLiquidityETH
   if (method == addLiquidityETH) {
     let token = "0x" + input.substring(34, 74);
+    let tokenInfo = await getTokenInfo(token);
+    if (!tokenInfo) return 0;
     let amountETHMin = parseToDigit(
       ethers.BigNumber.from("0x" + input.substring(202, 266))
     );
@@ -38,12 +64,18 @@ const parseTx = async (tx) => {
         hash,
         token,
         amountETHMin,
+        name: tokenInfo.name,
+        symbol: tokenInfo.symbol,
         tokenType: "bnb",
       };
     } else return 0;
   } else if (method == addLiquidity) {
     let tokenA = "0x" + input.substring(34, 74);
+    let tokenAInfo = await getTokenInfo(tokenA);
+    if (!tokenAInfo) return 0;
     let tokenB = "0x" + input.substring(74, 138).substring(24);
+    let tokenBInfo = await getTokenInfo(tokenB);
+    if (!tokenBInfo) return 0;
     let amountADesired = parseToDigit(
       ethers.BigNumber.from("0x" + input.substring(138, 202))
     );
@@ -58,7 +90,11 @@ const parseTx = async (tx) => {
         return {
           hash,
           tokenA,
+          nameA: tokenAInfo.name,
+          symbolA: tokenAInfo.symbol,
           tokenB,
+          nameB: tokenBInfo.name,
+          symbolB: tokenBInfo.symbol,
           busdAmount,
           tokenType: "busd",
         };
@@ -71,7 +107,11 @@ const parseTx = async (tx) => {
         return {
           hash,
           tokenA,
+          nameA: tokenAInfo.name,
+          symbolA: tokenAInfo.symbol,
           tokenB,
+          nameB: tokenBInfo.name,
+          symbolB: tokenBInfo.symbol,
           wBnbAmount,
           tokenType: "wbnb",
         };
