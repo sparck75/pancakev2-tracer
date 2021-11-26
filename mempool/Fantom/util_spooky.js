@@ -1,6 +1,6 @@
 require("dotenv").config();
 const ethers = require("ethers");
-const ERC20 = require("../contracts/erc20");
+const ERC20 = require("../../contracts/erc20");
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.OPERA_HTTP,
