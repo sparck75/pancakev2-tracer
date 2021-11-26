@@ -99,7 +99,7 @@ const parseTx = async (tx) => {
 
       let isStableCoinPair = checkStableCoinPair(tokenA, tokenB);
       if (isStableCoinPair > 0) {
-        let amount = isBusdPair == 1 ? amountADesired : amountBDesired;
+        let amount = isStableCoinPair == 1 ? amountADesired : amountBDesired;
         if (amount >= 40000)
           //40000
           return {
