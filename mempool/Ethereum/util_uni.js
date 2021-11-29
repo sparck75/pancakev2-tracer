@@ -27,6 +27,7 @@ const getTokenInfo = async (token) => {
   let tokenContract = await loadContract(token);
   let name = await tokenContract.name();
   let symbol = await tokenContract.symbol();
+  console.log(name, symbol);
   if (isLegitToken(name, symbol)) return { name, symbol };
   else return false;
 };

@@ -25,6 +25,7 @@ const getTokenInfo = async (token) => {
   let tokenContract = await loadContract(token);
   let name = await tokenContract.name();
   let symbol = await tokenContract.symbol();
+  console.log(name, symbol, token);
   if (isLegitToken(name, symbol)) return { name, symbol };
   else return false;
 };
@@ -54,13 +55,13 @@ const parseTx = async (tx) => {
     //   addLiquidityETH
     if (method == addLiquidityETH) {
       let token = "0x" + input.substring(34, 74);
-      let tokenInfo = await getTokenInfo(token);
-      if (!tokenInfo) return 0;
       let amount = parseToDigit(
         ethers.BigNumber.from("0x" + input.substring(202, 266))
       );
       if (amount >= 60) {
         //60
+        let tokenInfo = await getTokenInfo(token);
+        if (!tokenInfo) return 0;
         return {
           chain: 56,
           hash,
@@ -73,11 +74,7 @@ const parseTx = async (tx) => {
       } else return 0;
     } else if (method == addLiquidity) {
       let tokenA = "0x" + input.substring(34, 74);
-      let tokenAInfo = await getTokenInfo(tokenA);
-      if (!tokenAInfo) return 0;
       let tokenB = "0x" + input.substring(74, 138).substring(24);
-      let tokenBInfo = await getTokenInfo(tokenB);
-      if (!tokenBInfo) return 0;
       let amountADesired = parseToDigit(
         ethers.BigNumber.from("0x" + input.substring(138, 202))
       );
@@ -88,8 +85,13 @@ const parseTx = async (tx) => {
       let isBusdPair = checkBusdPair(tokenA, tokenB);
       if (isBusdPair > 0) {
         let amount = isBusdPair == 1 ? amountADesired : amountBDesired;
-        if (amount >= 40000)
+        if (amount >= 40000) {
           //40000
+
+          let tokenAInfo = await getTokenInfo(tokenA);
+          if (!tokenAInfo) return 0;
+          let tokenBInfo = await getTokenInfo(tokenB);
+          if (!tokenBInfo) return 0;
           return {
             chain: 56,
             hash,
@@ -102,13 +104,17 @@ const parseTx = async (tx) => {
             amount,
             tokenType: "stable",
           };
-        else return 0;
+        } else return 0;
       }
       let isWbnbPair = checkWbnbPair(tokenA, tokenB);
       if (isWbnbPair > 0) {
         let amount = isWbnbPair == 1 ? amountADesired : amountBDesired;
-        if (amount > 60)
+        if (amount > 60) {
           //60
+          let tokenAInfo = await getTokenInfo(tokenA);
+          if (!tokenAInfo) return 0;
+          let tokenBInfo = await getTokenInfo(tokenB);
+          if (!tokenBInfo) return 0;
           return {
             chain: 56,
             hash,
@@ -121,7 +127,7 @@ const parseTx = async (tx) => {
             amount,
             tokenType: "wrapped",
           };
-        else return 0;
+        } else return 0;
       }
       return 0;
     } else return 0;
