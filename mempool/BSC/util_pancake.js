@@ -55,13 +55,13 @@ const parseTx = async (tx) => {
     //   addLiquidityETH
     if (method == addLiquidityETH) {
       let token = "0x" + input.substring(34, 74);
+      let tokenInfo = await getTokenInfo(token);
+      if (!tokenInfo) return 0;
       let amount = parseToDigit(
         ethers.BigNumber.from("0x" + input.substring(202, 266))
       );
       if (amount >= 60) {
         //60
-        let tokenInfo = await getTokenInfo(token);
-        if (!tokenInfo) return 0;
         return {
           chain: 56,
           hash,
@@ -75,6 +75,10 @@ const parseTx = async (tx) => {
     } else if (method == addLiquidity) {
       let tokenA = "0x" + input.substring(34, 74);
       let tokenB = "0x" + input.substring(74, 138).substring(24);
+      let tokenAInfo = await getTokenInfo(tokenA);
+      if (!tokenAInfo) return 0;
+      let tokenBInfo = await getTokenInfo(tokenB);
+      if (!tokenBInfo) return 0;
       let amountADesired = parseToDigit(
         ethers.BigNumber.from("0x" + input.substring(138, 202))
       );
@@ -86,12 +90,7 @@ const parseTx = async (tx) => {
       if (isBusdPair > 0) {
         let amount = isBusdPair == 1 ? amountADesired : amountBDesired;
         if (amount >= 40000) {
-          //40000
-
-          let tokenAInfo = await getTokenInfo(tokenA);
-          if (!tokenAInfo) return 0;
-          let tokenBInfo = await getTokenInfo(tokenB);
-          if (!tokenBInfo) return 0;
+          //100000
           return {
             chain: 56,
             hash,
@@ -111,10 +110,6 @@ const parseTx = async (tx) => {
         let amount = isWbnbPair == 1 ? amountADesired : amountBDesired;
         if (amount > 60) {
           //60
-          let tokenAInfo = await getTokenInfo(tokenA);
-          if (!tokenAInfo) return 0;
-          let tokenBInfo = await getTokenInfo(tokenB);
-          if (!tokenBInfo) return 0;
           return {
             chain: 56,
             hash,
